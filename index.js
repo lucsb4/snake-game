@@ -142,8 +142,7 @@ var Snake = /** @class */ (function () {
         this.position.y += this.dy * CELL_SIZE;
     };
     Snake.prototype.eat = function () {
-        var _a = this.position, x = _a.x, y = _a.y;
-        this.tail.push([x, y]);
+        this.tail.push([this.position.x, this.position.y]);
     };
     return Snake;
 }());

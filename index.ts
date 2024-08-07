@@ -139,7 +139,7 @@ class Snake {
   dx: number;
   dy: number;
   position: { x: number; y: number };
-  tail: number[][];
+  tail: [number, number][];
   constructor(x: number, y: number) {
     this.dx = 1;
     this.dy = 0;
@@ -183,8 +183,7 @@ class Snake {
   }
 
   eat() {
-    const { x, y } = this.position;
-    this.tail.push([x, y]);
+    this.tail.push([this.position.x, this.position.y]);
   }
 }
 
