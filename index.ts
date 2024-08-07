@@ -136,18 +136,14 @@ const paint = Paint2D(canvas);
 // TODO: Success message with max snake length (grid^2-1?)
 
 class Snake {
-  x: number;
-  y: number;
   dx: number;
   dy: number;
-  position: [number, number];
+  position: { x: number; y: number };
   tail: number[][];
   constructor(x: number, y: number) {
-    this.x = x;
-    this.y = y;
     this.dx = 1;
     this.dy = 0;
-    this.position = [this.x, this.y];
+    this.position = { x, y };
     this.tail = [];
   }
 
@@ -176,18 +172,19 @@ class Snake {
   }
 
   move() {
+    const { x, y } = this.position;
     if (this.tail.length > 0) {
-      this.tail.unshift([this.x, this.y]);
+      this.tail.unshift([x, y]);
       this.tail.pop();
     }
 
-    this.x += this.dx * CELL_SIZE;
-    this.y += this.dy * CELL_SIZE;
-    this.position = [this.x, this.y];
+    this.position.x += this.dx * CELL_SIZE;
+    this.position.y += this.dy * CELL_SIZE;
   }
 
   eat() {
-    this.tail.push([this.x, this.y]);
+    const { x, y } = this.position;
+    this.tail.push([x, y]);
   }
 }
 
@@ -234,7 +231,7 @@ const run = (timestamp: number) => {
   snake.move();
   paint.render(() => {
     paint.background("black");
-    paint.rectangle(snake.x, snake.y, CELL_SIZE, CELL_SIZE, {
+    paint.rectangle(snake.position.x, snake.position.y, CELL_SIZE, CELL_SIZE, {
       fillStyle: "white",
     });
 
@@ -247,7 +244,7 @@ const run = (timestamp: number) => {
 
     food.spawn();
 
-    if (distance(...snake.position, ...food.position) <= 0) {
+    if (distance(snake.position.x, snake.position.y, ...food.position) <= 0) {
       snake.eat();
       food.respawn();
     }

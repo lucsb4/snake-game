@@ -112,11 +112,9 @@ var paint = Paint2D(canvas);
 // TODO: Success message with max snake length (grid^2-1?)
 var Snake = /** @class */ (function () {
     function Snake(x, y) {
-        this.x = x;
-        this.y = y;
         this.dx = 1;
         this.dy = 0;
-        this.position = [this.x, this.y];
+        this.position = { x: x, y: y };
         this.tail = [];
     }
     Snake.prototype.left = function () {
@@ -144,16 +142,17 @@ var Snake = /** @class */ (function () {
         this.dy = 1;
     };
     Snake.prototype.move = function () {
+        var _a = this.position, x = _a.x, y = _a.y;
         if (this.tail.length > 0) {
-            this.tail.unshift([this.x, this.y]);
+            this.tail.unshift([x, y]);
             this.tail.pop();
         }
-        this.x += this.dx * CELL_SIZE;
-        this.y += this.dy * CELL_SIZE;
-        this.position = [this.x, this.y];
+        this.position.x += this.dx * CELL_SIZE;
+        this.position.y += this.dy * CELL_SIZE;
     };
     Snake.prototype.eat = function () {
-        this.tail.push([this.x, this.y]);
+        var _a = this.position, x = _a.x, y = _a.y;
+        this.tail.push([x, y]);
     };
     return Snake;
 }());
@@ -192,7 +191,7 @@ var run = function (timestamp) {
     snake.move();
     paint.render(function () {
         paint.background("black");
-        paint.rectangle(snake.x, snake.y, CELL_SIZE, CELL_SIZE, {
+        paint.rectangle(snake.position.x, snake.position.y, CELL_SIZE, CELL_SIZE, {
             fillStyle: "white",
         });
         for (var i = 0; i < snake.tail.length; i++) {
@@ -202,7 +201,7 @@ var run = function (timestamp) {
             });
         }
         food.spawn();
-        if (distance.apply(void 0, __spreadArray(__spreadArray([], snake.position, false), food.position, false)) <= 0) {
+        if (distance.apply(void 0, __spreadArray([snake.position.x, snake.position.y], food.position, false)) <= 0) {
             snake.eat();
             food.respawn();
         }
