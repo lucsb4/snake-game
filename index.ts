@@ -189,27 +189,25 @@ class Snake {
 }
 
 class Food {
-  x: number;
-  y: number;
-  position: [number, number];
+  position: { x: number; y: number };
   constructor() {
-    this.x = Math.floor(Math.random() * (CANVAS_WIDTH / CELL_SIZE)) * CELL_SIZE;
-    this.y =
-      Math.floor(Math.random() * (CANVAS_HEIGHT / CELL_SIZE)) * CELL_SIZE;
-    this.position = [this.x, this.y];
+    this.position = {
+      x: Math.floor(Math.random() * (CANVAS_WIDTH / CELL_SIZE)) * CELL_SIZE,
+      y: Math.floor(Math.random() * (CANVAS_HEIGHT / CELL_SIZE)) * CELL_SIZE,
+    };
   }
 
   spawn() {
-    paint.rectangle(this.x, this.y, CELL_SIZE, CELL_SIZE, {
+    paint.rectangle(this.position.x, this.position.y, CELL_SIZE, CELL_SIZE, {
       fillStyle: "magenta",
     });
   }
 
   respawn() {
-    this.x = Math.floor(Math.random() * (CANVAS_WIDTH / CELL_SIZE)) * CELL_SIZE;
-    this.y =
+    this.position.x =
+      Math.floor(Math.random() * (CANVAS_WIDTH / CELL_SIZE)) * CELL_SIZE;
+    this.position.y =
       Math.floor(Math.random() * (CANVAS_HEIGHT / CELL_SIZE)) * CELL_SIZE;
-    this.position = [this.x, this.y];
   }
 }
 
@@ -244,7 +242,14 @@ const run = (timestamp: number) => {
 
     food.spawn();
 
-    if (distance(snake.position.x, snake.position.y, ...food.position) <= 0) {
+    if (
+      distance(
+        snake.position.x,
+        snake.position.y,
+        food.position.x,
+        food.position.y
+      ) <= 0
+    ) {
       snake.eat();
       food.respawn();
     }

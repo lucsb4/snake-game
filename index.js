@@ -1,12 +1,3 @@
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
-};
 /* ************************* */
 var Paint2D = function (canvas) {
     var ctx = canvas.getContext("2d");
@@ -158,21 +149,21 @@ var Snake = /** @class */ (function () {
 }());
 var Food = /** @class */ (function () {
     function Food() {
-        this.x = Math.floor(Math.random() * (CANVAS_WIDTH / CELL_SIZE)) * CELL_SIZE;
-        this.y =
-            Math.floor(Math.random() * (CANVAS_HEIGHT / CELL_SIZE)) * CELL_SIZE;
-        this.position = [this.x, this.y];
+        this.position = {
+            x: Math.floor(Math.random() * (CANVAS_WIDTH / CELL_SIZE)) * CELL_SIZE,
+            y: Math.floor(Math.random() * (CANVAS_HEIGHT / CELL_SIZE)) * CELL_SIZE,
+        };
     }
     Food.prototype.spawn = function () {
-        paint.rectangle(this.x, this.y, CELL_SIZE, CELL_SIZE, {
+        paint.rectangle(this.position.x, this.position.y, CELL_SIZE, CELL_SIZE, {
             fillStyle: "magenta",
         });
     };
     Food.prototype.respawn = function () {
-        this.x = Math.floor(Math.random() * (CANVAS_WIDTH / CELL_SIZE)) * CELL_SIZE;
-        this.y =
+        this.position.x =
+            Math.floor(Math.random() * (CANVAS_WIDTH / CELL_SIZE)) * CELL_SIZE;
+        this.position.y =
             Math.floor(Math.random() * (CANVAS_HEIGHT / CELL_SIZE)) * CELL_SIZE;
-        this.position = [this.x, this.y];
     };
     return Food;
 }());
@@ -201,7 +192,7 @@ var run = function (timestamp) {
             });
         }
         food.spawn();
-        if (distance.apply(void 0, __spreadArray([snake.position.x, snake.position.y], food.position, false)) <= 0) {
+        if (distance(snake.position.x, snake.position.y, food.position.x, food.position.y) <= 0) {
             snake.eat();
             food.respawn();
         }
